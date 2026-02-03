@@ -1,0 +1,27 @@
+apiVersion: v1
+entries:
+  inngest:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-02-03T10:26:56.574830313Z"
+    description: A Helm chart for self-hosting Inngest on Kubernetes
+    digest: 9296991edcdc02ea3c11590d795bb6a54bef8aa27fe1cb0ea89b5b3406e8e24b
+    home: https://www.inngest.com
+    icon: https://www.inngest.com/favicon-june-2025-light.svg
+    keywords:
+    - inngest
+    - event-driven
+    - serverless
+    - functions
+    kubeVersion: '>=1.20.0-0'
+    maintainers:
+    - email: support@inngest.com
+      name: Inngest Team
+    name: inngest
+    sources:
+    - https://github.com/inngest/inngest
+    type: application
+    urls:
+    - https://github.com/blnce-io/inngest-helm/releases/download/inngest-0.1.0/inngest-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-02-03T10:26:56.574846623Z"
