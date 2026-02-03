@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: write
+  pages: write
 
 jobs:
   release:
@@ -33,10 +34,67 @@ jobs:
         with:
           version: v3.14.0
 
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
-        with:
-          charts_dir: .
-          skip_existing: true
+      - name: Install chart-releaser
+        run: |
+          curl -sSL https://github.com/helm/chart-releaser/releases/download/v1.6.1/chart-releaser_1.6.1_linux_amd64.tar.gz | tar xz
+          sudo mv cr /usr/local/bin/cr
+
+      - name: Get chart version
+        id: chart_version
+        run: |
+          version=$(grep '^version:' Chart.yaml | awk '{print $2}')
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "Chart version: $version"
+
+      - name: Check if release exists
+        id: check_release
+        run: |
+          if gh release view "inngest-${{ steps.chart_version.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Release already exists, skipping"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Release does not exist, will create"
+          fi
         env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package chart
+        if: steps.check_release.outputs.exists == 'false'
+        run: |
+          mkdir -p .cr-release-packages
+          helm package . --destination .cr-release-packages
+
+      - name: Create GitHub Release
+        if: steps.check_release.outputs.exists == 'false'
+        run: |
+          cr upload \
+            --owner blnce-io \
+            --repo inngest-helm \
+            --package-path .cr-release-packages \
+            --token "${{ secrets.GITHUB_TOKEN }}" \
+            --skip-existing
+
+      - name: Checkout gh-pages
+        if: steps.check_release.outputs.exists == 'false'
+        run: |
+          # Create gh-pages branch if it doesn't exist
+          if ! git ls-remote --exit-code --heads origin gh-pages; then
+            git checkout --orphan gh-pages
+            git rm -rf .
+            git commit --allow-empty -m "Initialize gh-pages"
+            git push origin gh-pages
+          fi
+          git fetch origin gh-pages
+          git checkout gh-pages
+
+      - name: Update Helm repository index
+        if: steps.check_release.outputs.exists == 'false'
+        run: |
+          cr index \
+            --owner blnce-io \
+            --repo inngest-helm \
+            --package-path .cr-release-packages \
+            --index-path . \
+            --token "${{ secrets.GITHUB_TOKEN }}" \
+            --push
