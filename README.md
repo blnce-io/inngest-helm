@@ -2,6 +2,13 @@
 
 A Helm chart for deploying Inngest on Kubernetes clusters.
 
+## For Chart Maintainers
+
+To set up the Helm repository for hosting this chart, see [HELM_REPO_SETUP.md](HELM_REPO_SETUP.md) for detailed instructions on:
+- Enabling GitHub Pages
+- Releasing new chart versions
+- Managing the Helm repository
+
 ## Prerequisites
 
 - Kubernetes 1.20+
@@ -13,16 +20,38 @@ A Helm chart for deploying Inngest on Kubernetes clusters.
 
 ## Installation
 
-### Quick Start with Internal Postgres and Redis
+### Installing from Helm Repository (Recommended)
 
-Deploy Inngest with bundled PostgreSQL and Redis instances:
+Add the Inngest Helm repository and install the chart:
 
 ```bash
-# Install with required secrets (creates "inngest" namespace automatically)
+# Add the Helm repository
+helm repo add inngest https://blnce-io.github.io/inngest-helm/
+helm repo update
+
+# Install the chart
+helm install inngest inngest/inngest \
+  --set inngest.eventKey="your_event_key_here" \
+  --set inngest.signingKey="your_signing_key_here" \
+  --create-namespace \
+  --namespace inngest
+```
+
+### Installing from Source
+
+Clone this repository and install the chart locally:
+
+```bash
+# Clone the repository
+git clone https://github.com/blnce-io/inngest-helm.git
+cd inngest-helm
+
+# Install with required secrets
 helm install inngest . \
   --set inngest.eventKey="your_event_key_here" \
   --set inngest.signingKey="your_signing_key_here" \
-  --create-namespace
+  --create-namespace \
+  --namespace inngest
 ```
 
 **Important:** The `eventKey` and `signingKey` are required and must be hexadecimal strings for Inngest to function properly.
@@ -49,7 +78,11 @@ resources:
 Install with custom values:
 
 ```bash
-helm install inngest . -f my-values.yaml --create-namespace
+# From Helm repository
+helm install inngest inngest/inngest -f my-values.yaml --create-namespace --namespace inngest
+
+# From source
+helm install inngest . -f my-values.yaml --create-namespace --namespace inngest
 ```
 
 ## Resource Naming and Release Names
