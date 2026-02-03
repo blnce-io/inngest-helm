@@ -70,7 +70,7 @@ jobs:
         run: |
           cr upload \
             --owner blnce-io \
-            --repo inngest-helm \
+            --git-repo inngest-helm \
             --package-path .cr-release-packages \
             --token "${{ secrets.GITHUB_TOKEN }}" \
             --skip-existing
@@ -93,7 +93,7 @@ jobs:
         run: |
           cr index \
             --owner blnce-io \
-            --repo inngest-helm \
+            --git-repo inngest-helm \
             --package-path .cr-release-packages \
             --index-path . \
             --token "${{ secrets.GITHUB_TOKEN }}" \
