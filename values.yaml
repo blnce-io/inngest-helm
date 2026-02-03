@@ -75,8 +75,7 @@ ingress:
 
 # Resource limits and requests for the main Inngest container
 # IMPORTANT: Set appropriate limits for production use
-resources:
-  {}
+resources: {}
   # limits:
   #   cpu: 1000m
   #   memory: 1Gi
@@ -126,6 +125,11 @@ inngest:
   # Database configuration - use external databases
   postgres:
     uri: "" # External PostgreSQL URI (INNGEST_POSTGRES_URI)
+    # Reference an existing Kubernetes secret containing the PostgreSQL URI
+    # Useful for Vault-managed secrets or External Secrets Operator
+    existingSecret:
+      name: "" # Name of the Kubernetes secret (e.g., "vault-db-credentials")
+      key: "" # Key within the secret containing the URI (e.g., "DB_URL")
 
   redis:
     uri: "" # External Redis URI (INNGEST_REDIS_URI)
