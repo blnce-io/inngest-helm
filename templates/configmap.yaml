@@ -47,8 +47,9 @@ data:
   {{- if .Values.inngest.verbose }}
   INNGEST_VERBOSE: "true"                           # Enable verbose logging
   {{- end }}
-  # Database configuration (only for external databases)
-  {{- if and (not .Values.postgresql.enabled) .Values.inngest.postgres.uri }}
+  # Database configuration (only for external database string URIs)
+  # Note: External secrets and internal PostgreSQL use secretKeyRef in deployment.yaml for security
+  {{- if and (not .Values.postgresql.enabled) (not .Values.inngest.postgres.existingSecret.name) .Values.inngest.postgres.uri }}
   INNGEST_POSTGRES_URI: {{ .Values.inngest.postgres.uri | quote }}      # External PostgreSQL URI
   {{- end }}
   {{- if include "inngest.redis.uri" . }}

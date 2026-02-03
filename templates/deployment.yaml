@@ -82,7 +82,14 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            {{- if .Values.postgresql.enabled }}
+            {{- if .Values.inngest.postgres.existingSecret.name }}
+            # When using external secret (e.g., Vault-managed), reference it directly
+            - name: INNGEST_POSTGRES_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.inngest.postgres.existingSecret.name }}
+                  key: {{ .Values.inngest.postgres.existingSecret.key }}
+            {{- else if .Values.postgresql.enabled }}
             # When using internal PostgreSQL, get connection URI from secret (secure)
             - name: INNGEST_POSTGRES_URI
               valueFrom:
