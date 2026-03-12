@@ -20,7 +20,29 @@ To set up the Helm repository for hosting this chart, see [HELM_REPO_SETUP.md](H
 
 ## Installation
 
-### Installing from Helm Repository (Recommended)
+### From OCI Registry (Recommended)
+
+```bash
+# Install latest version
+helm install inngest oci://ghcr.io/inngest/inngest-helm/inngest \
+  --set inngest.signingKey="your-signing-key" \
+  --set inngest.eventKey="your-event-key" \
+  --create-namespace
+
+# Install specific version
+helm install inngest oci://ghcr.io/inngest/inngest-helm/inngest --version 0.2.0 \
+  --set inngest.signingKey="your-signing-key" \
+  --set inngest.eventKey="your-event-key" \
+  --create-namespace
+
+# Install with custom values file
+helm install inngest oci://ghcr.io/inngest/inngest-helm/inngest -f my-values.yaml --create-namespace
+```
+
+> [!TIP]
+> Review the [self-hosting documentation](https://www.inngest.com/docs/self-hosting?ref=github-helm) for configuration options including valid signing key generation.
+
+### Quick Start with Internal Postgres and Redis
 
 Add the Inngest Helm repository and install the chart:
 
@@ -65,14 +87,20 @@ inngest:
   eventKey: "your_event_key_here" # Must be a hexadecimal string
   signingKey: "your_signing_key_here" # Must be a hexadecimal string
 
-# Customize resource limits
+# Customize resource limits (defaults: requests cpu=500m, memory=1Gi)
 resources:
   limits:
-    cpu: 1000m
-    memory: 1Gi
+    cpu: 2000m
+    memory: 2Gi
   requests:
     cpu: 500m
-    memory: 512Mi
+    memory: 1Gi
+
+# Adjust liveness/readiness probes for slower database connections
+livenessProbe:
+  initialDelaySeconds: 90
+readinessProbe:
+  initialDelaySeconds: 90
 ```
 
 Install with custom values:
@@ -145,14 +173,14 @@ redis:
     enabled: true
     size: 8Gi
 
-# Resource limits
+# Resource limits (defaults: requests cpu=500m, memory=1Gi)
 resources:
   limits:
+    cpu: 2000m
+    memory: 2Gi
+  requests:
     cpu: 1000m
     memory: 1Gi
-  requests:
-    cpu: 500m
-    memory: 512Mi
 ```
 
 Deploy:
@@ -266,6 +294,12 @@ postgresql:
 redis:
   enabled: false
 
+# Liveness/readiness probes - increase for external databases that take longer to initialize
+livenessProbe:
+  initialDelaySeconds: 120
+readinessProbe:
+  initialDelaySeconds: 120
+
 # External access (configure ingress separately if needed)
 
 # KEDA autoscaling configuration
@@ -341,6 +375,12 @@ redis:
   persistence:
     enabled: true
     size: 10Gi
+
+# Liveness/readiness probes - increase for external databases that take longer to initialize
+livenessProbe:
+  initialDelaySeconds: 90
+readinessProbe:
+  initialDelaySeconds: 90
 
 # Ingress configuration for external access
 ingress:
