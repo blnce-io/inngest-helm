@@ -70,12 +70,6 @@ spec:
             - name: connect
               containerPort: {{ .Values.inngest.connectGatewayPort }}
               protocol: TCP
-            {{- if .Values.service.connGrpcPort }}
-            # gRPC port for executor-to-gateway forwarding across replicas
-            - name: connect-grpc
-              containerPort: {{ .Values.service.connGrpcPort }}
-              protocol: TCP
-            {{- end }}
           # Health check that restarts container if it becomes unresponsive
           livenessProbe:
             httpGet:
