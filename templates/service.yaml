@@ -30,11 +30,13 @@ spec:
       targetPort: connect                  # Container port name
       protocol: TCP
       name: connect
+    {{- if .Values.service.connGrpcPort }}
     # gRPC port for executor-to-gateway forwarding across replicas
-    - port: {{ .Values.service.connGrpcPort }} # External port (50052)
-      targetPort: connect-grpc                 # Container port name
+    - port: {{ .Values.service.connGrpcPort }}
+      targetPort: connect-grpc
       protocol: TCP
       name: connect-grpc
+    {{- end }}
     {{- if .Values.keda.enabled }}
     # Prometheus sidecar port - metrics API for KEDA (only when KEDA is enabled)
     - port: 9090
