@@ -59,6 +59,7 @@ service:
   type: ClusterIP # Service type (ClusterIP, NodePort, LoadBalancer)
   port: 8288 # Main Inngest API and UI port
   connPort: 8289 # Inngest Connect service port for function registration
+  connGrpcPort: 50052 # gRPC port for executor-to-gateway forwarding across replicas
 
 # Ingress configuration for external access
 ingress:
