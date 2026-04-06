@@ -84,9 +84,10 @@ jobs:
             git rm -rf .
             git commit --allow-empty -m "Initialize gh-pages"
             git push origin gh-pages
+            git checkout main
           fi
           git fetch origin gh-pages
-          git checkout gh-pages
+          git checkout -f gh-pages
 
       - name: Update Helm repository index
         if: steps.check_release.outputs.exists == 'false'
