@@ -92,9 +92,8 @@ readinessProbe:
 # Resource limits and requests for the main Inngest container
 # These defaults provide headroom for typical workloads; adjust for production
 resources:
-  limits: {}
-    # cpu: 2000m
-    # memory: 2Gi
+  limits:
+    memory: 2Gi
   requests:
     cpu: 500m
     memory: 1Gi
@@ -188,7 +187,6 @@ postgresql:
   # Resource management for PostgreSQL
   resources:
     limits:
-      cpu: 1000m # 1 CPU core limit
       memory: 1Gi # 1GB memory limit
     requests:
       cpu: 100m # 100m CPU request
@@ -222,7 +220,6 @@ redis:
   # Resource management for Redis
   resources:
     limits:
-      cpu: 500m # 500m CPU limit
       memory: 512Mi # 512MB memory limit
     requests:
       cpu: 100m # 100m CPU request
@@ -280,8 +277,7 @@ prometheus:
   # Keep these lightweight since it's only for KEDA metrics
   resources:
     limits:
-      cpu: 100m # CPU limit
-      memory: 128Mi # Memory limit
+      memory: 256Mi # Memory limit
     requests:
       cpu: 50m # CPU request
-      memory: 64Mi # Memory request
+      memory: 128Mi # Memory request
