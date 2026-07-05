@@ -1,3 +1,4 @@
+---
 apiVersion: v2
 name: inngest
 description: A Helm chart for self-hosting Inngest on Kubernetes
