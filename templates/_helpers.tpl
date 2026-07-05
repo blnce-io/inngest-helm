@@ -60,6 +60,7 @@ across chart upgrades to maintain service connectivity.
 {{- define "inngest.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "inngest.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/component: server
 {{- end }}
 
 {{/*
