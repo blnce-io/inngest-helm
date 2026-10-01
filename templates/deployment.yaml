@@ -8,7 +8,7 @@ This template creates the primary Inngest application deployment which includes:
 
 The deployment uses consistent naming ("inngest") regardless of Helm release name
 to ensure predictable resource references across environments.
-*/}}
+*/ -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -57,7 +57,7 @@ spec:
           # Container-level security context - read-only filesystem, dropped capabilities
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}@{{ .Values.image.digest }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           # Start the Inngest server process
           command: ["inngest", "start"]
