@@ -10,7 +10,8 @@ replicaCount: 1
 image:
   repository: inngest/inngest # Docker image repository
   pullPolicy: IfNotPresent # Image pull policy (Always, Never, IfNotPresent)
-  tag: "latest" # Image tag - CHANGE to specific version for production
+  tag: "v1.45.1" # Image tag - CHANGE to specific version for production
+  digest: "sha256:b251da91bd014d56816c3159c606f470d6e423be9a12fbed45808636160aa92c" # v1.45.1
 
 # Secrets for pulling private images (if needed)
 imagePullSecrets: []
